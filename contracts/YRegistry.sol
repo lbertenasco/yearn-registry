@@ -41,9 +41,9 @@ contract YRegistry {
   using SafeMath for uint256;
 
   address governance;
-  address owner;
-  
   address pendingGovernance;
+  
+  address owner;
   address pendingOwner;
 
   address[] controllers; // TODO

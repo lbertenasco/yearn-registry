@@ -36,27 +36,27 @@ contract YVaultV1InfoMap {
   }
 
   // vault: (address, name, symbol, decimals, governance, strategies[], archivedStrategies[], tokens[]) [getPricePerFullShare]
-  function getInfo(address _vault, address _registry) external view returns(
-    address vaultAddress,
-    string memory name,
-    string memory symbol,
-    uint decimals,
-    address token,
-    address governance,
-    uint pricePerFullShare,
-    address[] memory strategies
-    ) {
-    address[] memory currentStrategies = new address[](0); // TODO populate using _registry
-    return (
-      _vault,
-      IVault(_vault).name(),
-      IVault(_vault).symbol(),
-      IVault(_vault).decimals(),
-      IVault(_vault).token(),
-      IVault(_vault).governance(),
-      IVault(_vault).getPricePerFullShare(),
-      currentStrategies
-    );
-  }
+  // function getInfo(address _vault, address _registry) external view returns(
+  //   address vaultAddress,
+  //   string memory name,
+  //   string memory symbol,
+  //   uint decimals,
+  //   address token,
+  //   address governance,
+  //   uint pricePerFullShare,
+  //   address[] memory strategies
+  //   ) {
+  //   address[] memory currentStrategies = new address[](0); // TODO populate using _registry
+  //   return (
+  //     _vault,
+  //     IVault(_vault).name(),
+  //     IVault(_vault).symbol(),
+  //     IVault(_vault).decimals(),
+  //     IVault(_vault).token(),
+  //     IVault(_vault).governance(),
+  //     IVault(_vault).getPricePerFullShare(),
+  //     currentStrategies
+  //   );
+  // }
 
 }
