@@ -64,7 +64,7 @@ contract YRegistryV0 {
     // Get values from controller
     controller = IVault(_vault).controller();
     token = IVault(_vault).token();
-    strategy = IController(controller).strategies(token); 
+    strategy = IController(controller).strategies(token);
     
     // Check if vault is set on controller for token  
     address vault = IController(controller).vaults(token);

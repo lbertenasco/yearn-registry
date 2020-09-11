@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "ganache:mainnet": "ganache-cli --fork https://mainnet.infura.io/v3/51e770f205bb4866b88de5fb53a25b7f --account=\"0xd0a71bb97a36d787517a6858bbfdebd0d371f9883e632c14d6d05ea10912066d,1000000000000000000000\"",
     "compile": "npx buidler compile",
     "test": "npx buidler test"
   },
@@ -13,9 +14,9 @@
     "@nomiclabs/buidler": "^1.4.5",
     "@nomiclabs/buidler-ethers": "^2.0.0",
     "@nomiclabs/buidler-waffle": "^2.1.0",
-    "@openzeppelin/contracts": "^3.1.0",
+    "@openzeppelin/contracts": "^3.2.0",
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.1.0",
-    "ethers": "^5.0.10"
+    "ethers": "^5.0.12"
   }
 }
