@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ganache:mainnet": "ganache-cli --fork https://mainnet.infura.io/v3/51e770f205bb4866b88de5fb53a25b7f --account=\"0xd0a71bb97a36d787517a6858bbfdebd0d371f9883e632c14d6d05ea10912066d,1000000000000000000000\"",
+    "ganache:mainnet": "ganache-cli --fork https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY --account=\"0xd0a71bb97a36d787517a6858bbfdebd0d371f9883e632c14d6d05ea10912066d,1000000000000000000000\"",
     "compile": "npx buidler compile",
     "test": "npx buidler test"
   },

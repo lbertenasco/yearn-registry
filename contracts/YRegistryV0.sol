@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "../interfaces/IController.sol";
 import "../interfaces/IStrategy.sol";
 import "../interfaces/IVault.sol";
+import "../interfaces/IWrappedVault.sol";
 
 contract YRegistryV0 {
   using Address for address;
@@ -22,6 +23,10 @@ contract YRegistryV0 {
 
   EnumerableSet.AddressSet private vaults;
   EnumerableSet.AddressSet private controllers;
+
+  mapping(address => address) private wrappedVaults;
+
+  mapping(address => bool) public isDelegatedVault;
 
   constructor() public {
     owner = msg.sender;
@@ -39,42 +44,111 @@ contract YRegistryV0 {
   }
 
   function addVault(address _vault) public onlyGovernance {
-    require(_vault.isContract());
-    // Checks if vault is already on the array
-    require(!vaults.contains(_vault), "vault already exists");
+    setVault(_vault);
+
+    (address controller,,,,) = getVaultData(_vault);
     
-    // Adds unique _vault to vaults array
-    vaults.add(_vault);
-    (address controller,,) = getVaultData(_vault);
+    setController(controller);
+  }
 
-    // Adds Controller to vault and to controllers array
-    if (!controllers.contains(controller)) {
-      controllers.add(controller);
-    }
+  function addWrappedVault(address _vault) public onlyGovernance {
+    setVault(_vault);
+    address wrappedVault = IWrappedVault(_vault).vault();
+    setWrappedVault(_vault, wrappedVault);
 
+    (address controller,,,,) = getVaultData(_vault);
+
+    // Adds to controllers array
+    setController(controller);
     // TODO Add and track tokens and strategies? [historical]
     // (current ones can be obtained via getVaults + getVaultInfo)
+  }
+  function addDelegatedVault(address _vault) public onlyGovernance {
+    setVault(_vault);
+    setDelegatedVault(_vault);
+
+    (address controller,,,,) = getVaultData(_vault);
+
+    // Adds to controllers array
+    setController(controller);
+    // TODO Add and track tokens and strategies? [historical]
+    // (current ones can be obtained via getVaults + getVaultInfo)
+  }
+
+  function setVault(address _vault) internal {
+    require(_vault.isContract(), "Vault is not a contract");
+    // Checks if vault is already on the array
+    require(!vaults.contains(_vault), "Vault already exists");
+    // Adds unique _vault to vaults array
+    vaults.add(_vault);
+  }
+
+  function setWrappedVault(address _vault, address _wrappedVault) internal {
+    require(_wrappedVault.isContract(), "WrappedVault is not a contract");
+    wrappedVaults[_vault] = _wrappedVault;
+  }
+
+  function setDelegatedVault(address _vault) internal {
+    // TODO Is there any way to check if a vault is delegated
+    isDelegatedVault[_vault] = true;
+  }
+
+  function setController(address _controller) internal {
+    // Adds Controller to controllers array
+    if (!controllers.contains(_controller)) {
+      controllers.add(_controller);
+    }
   }
 
   function getVaultData(address _vault) internal view returns (
     address controller,
     address token,
-    address strategy
+    address strategy,
+    bool isWrapped,
+    bool isDelegated
   ) {
-    // Get values from controller
-    controller = IVault(_vault).controller();
-    token = IVault(_vault).token();
-    strategy = IController(controller).strategies(token);
+    address vault = _vault;
+    isWrapped = wrappedVaults[_vault] != address(0);
+    if (isWrapped) {
+      vault = wrappedVaults[_vault];
+    }
+    isDelegated = isDelegatedVault[vault];
     
-    // Check if vault is set on controller for token  
-    address vault = IController(controller).vaults(token);
-    require(_vault == vault, "Controller vault address does not match"); // Should never happen
+    // Get values from controller
+    controller = IVault(vault).controller();
+    if (isWrapped && IVault(vault).underlying() != address(0)) {
+      token = IVault(_vault).token(); // Use non-wrapped vault
+    } else {
+      token = IVault(vault).token();
+    }
+    
+    if (isDelegated) {
+      strategy = IController(controller).strategies(vault);
+    } else {
+      strategy = IController(controller).strategies(token);
+    }
+    
+    // Check if vault is set on controller for token
+    address controllerVault = address(0);
+    if (isDelegated) {
+      controllerVault = IController(controller).vaults(strategy);
+    } else {
+      controllerVault = IController(controller).vaults(token);
+    }
+    require(controllerVault == vault, "Controller vault address does not match"); // Might happen on Proxy Vaults
     
     // Check if strategy has the same token as vault
-    address strategyToken = IStrategy(strategy).want();
-    require(token == strategyToken, "Strategy token address does not match"); // Might happen?
-    
-    return (controller, token, strategy);
+    if (isWrapped) {
+      address underlying = IVault(vault).underlying();
+      require(underlying == token, "WrappedVault token address does not match"); // Might happen?
+    } else if (isDelegated) {
+
+    } else {
+      address strategyToken = IStrategy(strategy).want();
+      require(token == strategyToken, "Strategy token address does not match"); // Might happen?
+    }
+
+    return (controller, token, strategy, isWrapped, isDelegated);
   }
 
   // Vaults getters
@@ -97,13 +171,17 @@ contract YRegistryV0 {
   function getVaultInfo(address _vault) external view returns (
     address controller,
     address token,
-    address strategy
+    address strategy,
+    bool isWrapped,
+    bool isDelegated
   ) {
-    (controller, token, strategy) = getVaultData(_vault);
+    (controller, token, strategy, isWrapped, isDelegated) = getVaultData(_vault);
     return (
       controller,
       token,
-      strategy
+      strategy,
+      isWrapped,
+      isDelegated
     );
   }
 

@@ -1,5 +1,25 @@
 [
     {
+        "name": "aLINK",
+        "address": "0x29E240CFD7946BA20895a7a02eDb25C210f9f324",
+        "type": "delegated",
+        "token": {
+            "name": "aLINK",
+            "address": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
+            "decimals": 18
+        }
+    },
+    {
+        "name": "ChainLink",
+        "address": "0x881b06da56BB5675c54E4Ed311c21E54C5025298",
+        "type": "wrapped",
+        "token": {
+            "name": "LINK",
+            "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+            "decimals": 18
+        }
+    },
+    {
         "name": "USD Coin",
         "address": "0x597aD1e0c13Bfe8025993D9e79C69E1c0233522e",
         "token": {
@@ -77,24 +97,6 @@
         "token": {
             "name": "WETH",
             "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            "decimals": 18
-        }
-    },
-    {
-        "name": "ChainLink",
-        "address": "0x881b06da56BB5675c54E4Ed311c21E54C5025298",
-        "token": {
-            "name": "LINK",
-            "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
-            "decimals": 18
-        }
-    },
-    {
-        "name": "aLINK",
-        "address": "0x29E240CFD7946BA20895a7a02eDb25C210f9f324",
-        "token": {
-            "name": "aLINK",
-            "address": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
             "decimals": 18
         }
     }
