@@ -7,16 +7,16 @@ async function main() {
   const [owner] = await ethers.getSigners();
 
   // We get the contract to deploy
-  const YRegistryV0 = await ethers.getContractFactory("YRegistryV0");
-  const yRegistryV0 = await YRegistryV0.deploy();
+  const YRegistryV1 = await ethers.getContractFactory("YRegistryV1");
+  const yRegistryV1 = await YRegistryV1.deploy();
 
-  console.log('yRegistryV0.addVault')
-  console.log(yRegistryV0.addVault)
+  console.log('yRegistryV1.addVault')
+  console.log(yRegistryV1.addVault)
 
-  console.log("YRegistryV0 deployed to:", yRegistryV0.address);
+  console.log("YRegistryV1 deployed to:", yRegistryV1.address);
   for (const vault of vaultsConfig) {
     console.log('Adding:',vault.name, vault.address);
-    await yRegistryV0.addVault(vault.address);
+    await yRegistryV1.addVault(vault.address);
   }
 }
 

@@ -10,16 +10,16 @@ import "../interfaces/IStrategy.sol";
 import "../interfaces/IVault.sol";
 import "../interfaces/IWrappedVault.sol";
 
-contract YRegistryV0 {
+contract YRegistryV1 {
   using Address for address;
   using SafeMath for uint256;
   using EnumerableSet for EnumerableSet.AddressSet;
 
-  address governance;
-  address owner;
+  address public governance;
+  address public owner;
   
-  address pendingGovernance;
-  address pendingOwner;
+  address public pendingGovernance;
+  address public pendingOwner;
 
   EnumerableSet.AddressSet private vaults;
   EnumerableSet.AddressSet private controllers;
@@ -36,11 +36,11 @@ contract YRegistryV0 {
   function isYRegistry() external pure returns (bool) {
     return true;
   }
-  function isYRegistryV0() external pure returns (bool) {
-    return true;
+  function yRegistryVersion() external pure returns (uint) {
+    return 1;
   }
   function getName() external pure returns (string memory) {
-    return "YRegistryV0";
+    return "YRegistryV1";
   }
 
   function addVault(address _vault) public onlyGovernance {
