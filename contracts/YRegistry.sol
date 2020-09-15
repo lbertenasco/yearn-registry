@@ -1,4 +1,5 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.6.8;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
@@ -10,7 +11,7 @@ import "../interfaces/IStrategy.sol";
 import "../interfaces/IVault.sol";
 import "../interfaces/IWrappedVault.sol";
 
-contract YRegistryV1 {
+contract YRegistry {
   using Address for address;
   using SafeMath for uint256;
   using EnumerableSet for EnumerableSet.AddressSet;
@@ -32,15 +33,9 @@ contract YRegistryV1 {
     owner = msg.sender;
     governance = msg.sender;
   }
-  
-  function isYRegistry() external pure returns (bool) {
-    return true;
-  }
-  function yRegistryVersion() external pure returns (uint) {
-    return 1;
-  }
+
   function getName() external pure returns (string memory) {
-    return "YRegistryV1";
+    return "YRegistry";
   }
 
   function addVault(address _vault) public onlyGovernance {
@@ -184,6 +179,31 @@ contract YRegistryV1 {
       isDelegated
     );
   }
+
+  function getVaultsInfo() external view returns (
+    address[] memory controllerArray,
+    address[] memory tokenArray,
+    address[] memory strategyArray,
+    bool[] memory isWrappedArray,
+    bool[] memory isDelegatedArray
+  ) {
+    controllerArray = new address[](vaults.length());
+    tokenArray = new address[](vaults.length());
+    strategyArray = new address[](vaults.length());
+    isWrappedArray = new bool[](vaults.length());
+    isDelegatedArray = new bool[](vaults.length());
+
+    for (uint i = 0; i < vaults.length(); i++) {
+      (address _controller, address _token, address _strategy, bool _isWrapped, bool _isDelegated) = getVaultData(vaults.at(i));
+      controllerArray[i] = _controller;
+      tokenArray[i] = _token;
+      strategyArray[i] = _strategy;
+      isWrappedArray[i] = _isWrapped;
+      isDelegatedArray[i] = _isDelegated;
+    }
+
+  }
+
 
  // Governance setters
   function setPendingGovernance(address _pendingGovernance) external onlyGovernance {
