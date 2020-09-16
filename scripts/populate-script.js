@@ -8,16 +8,24 @@ async function main() {
 
   // We get the contract to deploy
   const YRegistryV1 = await ethers.getContractFactory("YRegistryV1");
-  const yRegistryV1 = await YRegistryV1.deploy();
+  const yRegistryV1 = await YRegistryV1.attach("0x3eE41C098f9666ed2eA246f4D2558010e59d63A0");
 
-  console.log('yRegistryV1.addVault')
-  console.log(yRegistryV1.addVault)
 
-  console.log("YRegistryV1 deployed to:", yRegistryV1.address);
   for (const vault of vaultsConfig) {
-    console.log('Adding:',vault.name, vault.address);
-    await yRegistryV1.addVault(vault.address);
+    console.log('Adding:', vault.name, vault.address);
+    switch (vault.type) {
+      case 'wrapped':
+        await yRegistryV1.addWrappedVault(vault.address);
+        break;
+      case 'delegated':
+        await yRegistryV1.addDelegatedVault(vault.address);
+        break;
+      default:
+        await yRegistryV1.addVault(vault.address);
+        break;
+    }
   }
+  console.log('Done');
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -7,17 +7,10 @@ async function main() {
   const [owner] = await ethers.getSigners();
 
   // We get the contract to deploy
-  const YRegistryV1 = await ethers.getContractFactory("YRegistryV1");
-  const yRegistryV1 = await YRegistryV1.deploy(owner._address);
+  const YRegistry = await ethers.getContractFactory("YRegistry");
+  const yRegistry = await YRegistry.deploy(owner._address);
 
-  console.log('yRegistryV1.addVault')
-  console.log(yRegistryV1.addVault)
-
-  console.log("YRegistryV1 deployed to:", yRegistryV1.address);
-  for (const vault of vaultsConfig) {
-    console.log('Adding:',vault.name, vault.address);
-    await yRegistryV1.addVault(vault.address);
-  }
+  console.log("YRegistry deployed to:", yRegistry.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

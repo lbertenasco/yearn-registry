@@ -28,7 +28,7 @@ contract YRegistry {
 
   constructor(address _governance) public {
     require(_governance != address(0), "Missing Governance");
-    governance = msg.sender;
+    governance = _governance;
   }
 
   function getName() external pure returns (string memory) {
@@ -173,6 +173,29 @@ contract YRegistry {
       isWrapped,
       isDelegated
     );
+  }
+
+  function getVaultsInfo() external view returns (
+    address[] memory controllerArray,
+    address[] memory tokenArray,
+    address[] memory strategyArray,
+    bool[] memory isWrappedArray,
+    bool[] memory isDelegatedArray
+  ) {
+    controllerArray = new address[](vaults.length());
+    tokenArray = new address[](vaults.length());
+    strategyArray = new address[](vaults.length());
+    isWrappedArray = new bool[](vaults.length());
+    isDelegatedArray = new bool[](vaults.length());
+
+    for (uint i = 0; i < vaults.length(); i++) {
+      (address _controller, address _token, address _strategy, bool _isWrapped, bool _isDelegated) = getVaultData(vaults.at(i));
+      controllerArray[i] = _controller;
+      tokenArray[i] = _token;
+      strategyArray[i] = _strategy;
+      isWrappedArray[i] = _isWrapped;
+      isDelegatedArray[i] = _isDelegated;
+    }
   }
 
  // Governance setters
